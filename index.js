@@ -54,7 +54,37 @@ async function run() {
             res.send(result);
         })
 
-        app.delete('myList/:id', async (req, res) => {
+        app.get('/update/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await spotCollection.findOne(query);
+            // console.log(id);
+            res.send(result);
+        })
+
+        app.put('/updateTouristSpot/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updatedTouristSpot = req.body;
+            const touristSpot = {
+                $set: {
+                    touristSpot: updatedTouristSpot.touristSpot,
+                    countryName: updatedTouristSpot.countryName,
+                    location: updatedTouristSpot.location,
+                    averageCost: updatedTouristSpot.averageCost,
+                    photo: updatedTouristSpot.photo,
+                    season: updatedTouristSpot.season,
+                    travelTime: updatedTouristSpot.travelTime,
+                    totalVisitorsPerYear: updatedTouristSpot.totalVisitorsPerYear,
+                    description: updatedTouristSpot.description,
+                }
+            }
+            const result = await spotCollection.updateOne(filter, touristSpot, options);
+            res.send(result);
+        })
+
+        app.delete('/delete/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
             const result = await spotCollection.deleteOne(query);
